@@ -16,7 +16,7 @@ public class InputReader {
 
                 if(line.isEmpty() || line.charAt(0) == '#') continue;
 
-                if(line.charAt(0) == 'c'){
+                if(line.charAt(0) == 'c' || line.charAt(0) == 'C'){
                     String[] tokens = line.split(" ");
                     colorCount = Integer.parseInt(tokens[2]);
                 }else {

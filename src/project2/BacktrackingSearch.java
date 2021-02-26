@@ -11,8 +11,8 @@ public class BacktrackingSearch {
     public BacktrackingSearch(Input input){
         mAdjacencyList = input.getAdjacencyList();
         mDomainList = new HashMap<>();
-        initDomain();
         mColorCount = input.getColorCount();
+        initDomain();
     }
 
     private void initDomain(){
@@ -37,11 +37,15 @@ public class BacktrackingSearch {
 
         int variable = choseVariable(assignment);
 
-        for(int color : mDomainList.get(variable)){
+        ArrayList<Integer> variableDomain = new ArrayList<>(mDomainList.get(variable));
+
+        for(int color : variableDomain){
             HashMap<Integer, Integer> copyAssignment = new HashMap<>(assignment);
             copyAssignment.put(variable, color);
+
+            AC3Result ac3Result = null;
 //            if(consistent(copyAssignment)){ // can delete it since ac3 handles it
-                AC3Result ac3Result = AC3(variable);
+                ac3Result = AC3(variable, color);
                 if(ac3Result.isConsistent()){
                     // update domain list from deletedValues
                     for(Integer var : ac3Result.getDeletedValues().keySet()){
@@ -56,11 +60,13 @@ public class BacktrackingSearch {
                 }
 //            }
             // add back deletedValues to domainList
-            for(Integer var : ac3Result.getDeletedValues().keySet()) {
-                for (Integer value : ac3Result.getDeletedValues().get(var)) {
-                    mDomainList.get(var).add(value);
+//            if(ac3Result != null) {
+                for (Integer var : ac3Result.getDeletedValues().keySet()) {
+                    for (Integer value : ac3Result.getDeletedValues().get(var)) {
+                        mDomainList.get(var).add(value);
+                    }
                 }
-            }
+//            }
         }
         return new HashMap<>();
     }
@@ -89,10 +95,26 @@ public class BacktrackingSearch {
         return true;
     }
 
-    private AC3Result AC3(int var){
+    private AC3Result AC3(int var, int color){
         Queue<Pair> queue = new LinkedList<>();
         // deleted values from variables domain
         HashMap<Integer, ArrayList<Integer>> deletedValues = new HashMap<>();
+
+        // decrease domain of assigned variable to the only value chosen
+        // 1. add deleted values to the deletedValues list
+        ArrayList<Integer> valsDelteedFromDomain = new ArrayList<>();
+        for(Integer val : mDomainList.get(var)){
+            if(color != val){
+                // initialize list if absent and add value
+                deletedValues.computeIfAbsent(var, ArrayList::new);
+                deletedValues.get(var).add(val);
+                valsDelteedFromDomain.add(val);
+            }
+        }
+        // 2. delete them from domainList
+        for(Integer val : valsDelteedFromDomain){
+            mDomainList.get(var).remove(val);
+        }
 
         for(Integer neighbour : mAdjacencyList.get(var)){
             queue.add(new Pair(neighbour, var));
@@ -117,15 +139,18 @@ public class BacktrackingSearch {
     private boolean revise(int from, int to, HashMap<Integer, ArrayList<Integer>> deletedValues){
         boolean revised = false;
         boolean consistent = false;
-        for(Integer xValue : mDomainList.get(from)){
-            for(Integer yValue : mDomainList.get(to)){
-                if (!xValue.equals(yValue)) {
+        for(Iterator<Integer> i = mDomainList.get(from).iterator(); i.hasNext();){
+            int xValue = i.next();
+            for(Iterator<Integer> j = mDomainList.get(to).iterator(); j.hasNext();){
+                int yValue = j.next();
+                if (xValue != yValue) {
                     consistent = true;
                     break;
                 }
             }
             if(!consistent){
-                mDomainList.get(from).remove(xValue);
+                //mDomainList.get(from).remove(xValue);
+                i.remove();
                 // initialize list if absent and add value
                 deletedValues.computeIfAbsent(from, ArrayList::new);
                 deletedValues.get(from).add(xValue);
@@ -133,6 +158,22 @@ public class BacktrackingSearch {
             }
             consistent = false;
         }
+//        for(Integer xValue : mDomainList.get(from)){
+//            for(Integer yValue : mDomainList.get(to)){
+//                if (!xValue.equals(yValue)) {
+//                    consistent = true;
+//                    break;
+//                }
+//            }
+//            if(!consistent){
+//                mDomainList.get(from).remove(xValue);
+//                // initialize list if absent and add value
+//                deletedValues.computeIfAbsent(from, ArrayList::new);
+//                deletedValues.get(from).add(xValue);
+//                revised = true;
+//            }
+//            consistent = false;
+//        }
         return revised;
     }
 }
