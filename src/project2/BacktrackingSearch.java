@@ -15,6 +15,7 @@ public class BacktrackingSearch {
         initDomain();
     }
 
+    // initialize domain of each variable with all values
     private void initDomain() {
         for (Integer var : mAdjacencyList.keySet()) {
             HashSet<Integer> tempSet = new HashSet<>();
@@ -25,10 +26,12 @@ public class BacktrackingSearch {
         }
     }
 
+    // calls backtracking search method
     public HashMap<Integer, Integer> startSearch() {
         return search(new HashMap<>());
     }
 
+    // backtracking search
     // assignment, Vertex <-> Color Number
     private HashMap<Integer, Integer> search(HashMap<Integer, Integer> assignment) {
         if (assignment.keySet().size() == mAdjacencyList.keySet().size()) {
@@ -43,7 +46,10 @@ public class BacktrackingSearch {
             HashMap<Integer, Integer> copyAssignment = new HashMap<>(assignment);
             copyAssignment.put(variable, color);
 
+            // after assignment apply AC3
             AC3Result ac3Result = AC3(variable, color);
+
+            // If consistent then apply changes returned by AC3 to domain list, otherwise continue to the next assignment
             if (ac3Result.isConsistent()) {
                 // update domain list from deletedValues
                 for (Integer var : ac3Result.getDeletedValues().keySet()) {
@@ -52,6 +58,8 @@ public class BacktrackingSearch {
                     }
                 }
             } else continue;
+
+            // call search recursively
             HashMap<Integer, Integer> result = search(copyAssignment);
             if (!result.isEmpty()) {
                 return result;
@@ -120,6 +128,7 @@ public class BacktrackingSearch {
         return orderedDomain;
     }
 
+    // Constraint propagation
     private AC3Result AC3(int var, int color) {
         Queue<Pair> queue = new LinkedList<>();
         // deleted values from variables domain
@@ -141,12 +150,14 @@ public class BacktrackingSearch {
             mDomainList.get(var).remove(val);
         }
 
+        // add all arcs from neighbours to var to the queue
         for (Integer neighbour : mAdjacencyList.get(var)) {
             queue.add(new Pair(neighbour, var));
         }
         while (!queue.isEmpty()) {
             Pair arc = queue.remove();
             if (revise(arc.getFirst(), arc.getSecond(), deletedValues)) {
+                // if domain of a variable becomes empty then return false
                 if (mDomainList.get(arc.getFirst()).isEmpty()) {
                     return new AC3Result(deletedValues, false);
                 }
