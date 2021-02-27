@@ -15,9 +15,13 @@ public class Main {
         BacktrackingSearch backtrackingSearch = new BacktrackingSearch(input);
         HashMap<Integer, Integer> result = backtrackingSearch.startSearch();
         // print final assignments
-        System.out.println("Variable -> Color");
-        for(Integer var : result.keySet()){
-            System.out.println(var + " -> " + result.get(var));
+        if(result.isEmpty()){
+            System.out.println("There is not a solution for the given input!");
+        }else {
+            System.out.println("Variable -> Color");
+            for (Integer var : result.keySet()) {
+                System.out.println(var + " -> " + result.get(var));
+            }
         }
     }
 }
