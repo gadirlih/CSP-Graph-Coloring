@@ -120,21 +120,6 @@ public class BacktrackingSearch {
         return orderedDomain;
     }
 
-    private boolean consistent(HashMap<Integer, Integer> assignment) {
-        // check if all neighbours of each variable is consistent
-        for (Integer var : mAdjacencyList.keySet()) {
-            ArrayList<Integer> neighbours = mAdjacencyList.get(var);
-            for (int neighbour : neighbours) {
-                if (assignment.containsKey(var) && assignment.containsKey(neighbour)) {
-                    if (assignment.get(var).equals(assignment.get(neighbour))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     private AC3Result AC3(int var, int color) {
         Queue<Pair> queue = new LinkedList<>();
         // deleted values from variables domain
