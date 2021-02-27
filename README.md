@@ -1,4 +1,5 @@
 # CSP-Graph-Coloring
+## An exmple solution for graph coloring problem
 In this project backtracking search was used with AC3 which provides constraint propagation. AC3 is invoked each time a variable is assigned a new value. MRV heuristic is used when choosing the next variable. When there are more than 1 variable with the minimum domain size, then the variable is chosen based on the degree of it. LCV heuristic is used to select a value when there are more than 1 remaining value in the domain of a variable.
 To start the program:
 1. navigate to the project directory
