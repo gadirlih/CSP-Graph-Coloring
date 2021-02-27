@@ -188,7 +188,6 @@ public class BacktrackingSearch {
                 }
             }
             if (!consistent) {
-                //mDomainList.get(from).remove(xValue);
                 i.remove();
                 // initialize list if absent and add value
                 deletedValues.computeIfAbsent(from, ArrayList::new);
