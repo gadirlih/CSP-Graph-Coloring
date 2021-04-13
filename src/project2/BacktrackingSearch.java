@@ -110,7 +110,8 @@ public class BacktrackingSearch {
     }
 
     // Apply LCV
-    // Check domains of neighbours and sort the values based on how much they constrain neighbours
+    // Check domains of neighbours and determine if the chosen value constrain their domain
+    // Sort the values based on how much they constrain neighbours in ascending order
     private ArrayList<Integer> orderDomain(int var) {
         ArrayList<Integer> orderedDomain = new ArrayList<>();
         ArrayList<Pair> orderedPairs = new ArrayList<>();
@@ -136,17 +137,17 @@ public class BacktrackingSearch {
 
         // decrease domain of assigned variable to the only value chosen
         // 1. add deleted values to the deletedValues list
-        ArrayList<Integer> valsDelteedFromDomain = new ArrayList<>();
+        ArrayList<Integer> valsDeletedFromDomain = new ArrayList<>();
         for (Integer val : mDomainList.get(var)) {
             if (color != val) {
                 // initialize list if absent and add value
                 deletedValues.computeIfAbsent(var, ArrayList::new);
                 deletedValues.get(var).add(val);
-                valsDelteedFromDomain.add(val);
+                valsDeletedFromDomain.add(val);
             }
         }
         // 2. delete them from domainList
-        for (Integer val : valsDelteedFromDomain) {
+        for (Integer val : valsDeletedFromDomain) {
             mDomainList.get(var).remove(val);
         }
 
