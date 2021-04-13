@@ -172,7 +172,8 @@ public class BacktrackingSearch {
     }
 
     // Checks consistency between from and to variables
-    // direction is from "from" variable to "to" variable
+    // Direction is from "from" variable to "to" variable
+    // Returns true if some value is deleted in the domain of "from" variable
     private boolean revise(int from, int to, HashMap<Integer, ArrayList<Integer>> deletedValues) {
         boolean revised = false;
         boolean consistent = false;
