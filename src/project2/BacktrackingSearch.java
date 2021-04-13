@@ -76,7 +76,7 @@ public class BacktrackingSearch {
 
     // Apply MRV
     // Chose variable which has minimum remaining values
-    // If there are more than variable with the same amount of minimum values
+    // If there are more than one variable with the same amount of minimum values
     // Then chose based on the degree of these remaining variables
     // Chose the one with the highest degree
     private int choseVariable(HashMap<Integer, Integer> assignment) {
